@@ -21,4 +21,9 @@ public class MainClassTest {
 	public void testGetClassNumber(){
 		Assert.assertTrue("The actual value less or equal 45",mcObject.getClassNumber()>45);
 	}
+
+	@Test
+	public void testGetClassString(){
+		Assert.assertTrue("The actual string does not contains 'hello' or 'Hello' as substring", mcObject.getClassString().contains("hello") || mcObject.getClassString().contains("Hello"));
+	}
 }
