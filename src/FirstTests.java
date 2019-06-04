@@ -81,7 +81,7 @@ public class FirstTests {
 
 		waitForElementAndClear(
 				By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
-				"There is no searchfieald on the screen",
+				"There is no search field on the screen",
 				5
 		);
 
@@ -92,6 +92,32 @@ public class FirstTests {
 		);
 	}
 
+
+	@Test
+	public void checkSearchResultContainsRequestedString(){
+		waitForElementAndClick(
+				By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+				"There is no searchfieald on the screen",
+				5
+		);
+
+		waitForElementAndSendKeys(
+				By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+				"Java",
+				"There is no search field on the screen",
+				5
+		);
+
+		List<WebElement> search_results = waitForListOfElementsPresentByXPath(
+				By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
+				"There is no search results on the screen",
+				5
+		);
+
+		for (WebElement we : search_results){
+			Assert.assertTrue("Result does not contains search world", we.getText().toLowerCase().contains("java"));
+		}
+	}
 
 
 	//------------------------------------------------------------------------------------------------------------------
