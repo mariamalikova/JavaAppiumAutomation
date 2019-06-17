@@ -293,10 +293,53 @@ public class FirstTests {
 
 	}
 
+	// Ex 6
+	@Test
+	public void checkArticleTitleWithoutWaiting(){
+		waitForElementAndClick(
+				By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+				"There is no search field on the screen",
+				5
+		);
+
+		waitForElementAndSendKeys(
+				By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+				"Java",
+				"There is no search field on the screen",
+				5
+		);
+		waitForElementPresent(
+				By.xpath("//*[@resource-id='org.wikipedia:id/fragment_search_results']"),
+				"There is no search results on the screen"
+		);
+
+		waitForElementAndClick(
+				By.xpath("//*[contains(@text, 'programming language')]"),
+				"There is no 'Java (programming language')' search results on the screen",
+				5
+		);
+
+		assertElementPresent(
+				By.xpath("//*[@resource-id='pagelib_edit_section_title_description']"),
+				"We don't found subtitle element");
+	}
 	//------------------------------------------------------------------------------------------------------------------
 	// Search and click
 	//------------------------------------------------------------------------------------------------------------------
 
+	private int getAmountOfElements(By by){
+		List elements = driver.findElements(by);
+		return elements.size();
+	}
+
+	private void assertElementPresent(By by, String err_msg){
+		int amount_of_elements = getAmountOfElements(by);
+		if (amount_of_elements == 0) {
+			String default_message = "An element " + by.toString() + " supposed to be present";
+			throw new AssertionError(default_message + " " + err_msg);
+
+		}
+	}
 
 	private WebElement waitForElementPresent(By by, String error_msg, long timeoutInSeconds){
 		WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
