@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -32,6 +33,8 @@ public class FirstTests {
 		capabilities.setCapability("app","/Volumes/Disk/Work/JavaAppiumAutomation/apks/org.wikipedia_10280_apps.evozi.com.apk");
 
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+
+		driver.rotate(ScreenOrientation.PORTRAIT);
 
 		waitForElementAndClick(
 				By.xpath("//*[@resource-id='org.wikipedia:id/fragment_onboarding_skip_button']"),
@@ -125,7 +128,7 @@ public class FirstTests {
 
 	// Ex 5
 	@Test
-	public void saveTwotArticlesToMyList() {
+	public void saveTwoArticlesToMyList() {
 
 		String folder_name = "Learning programming";
 		String first_article_title = "Java";
@@ -323,6 +326,47 @@ public class FirstTests {
 				By.xpath("//*[@resource-id='pagelib_edit_section_title_description']"),
 				"We don't found subtitle element");
 	}
+
+	// Ex 7
+	@Test
+	public void testChangeScreenOrientationOnSearchResults() {
+		waitForElementAndClick(
+				By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+				"There is no search field on the screen",
+				5
+		);
+
+		waitForElementAndSendKeys(
+				By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+				"Java",
+				"There is no search field on the screen",
+				5
+		);
+
+		waitForElementAndClick(
+				By.xpath("//*[contains(@text, 'programming language')]"),
+				"There is no 'programming language' search results on the screen",
+				15
+		);
+
+
+		String title_before_rotation = waitForElementAndGetText(
+				By.xpath("//*[@resource-id='pagelib_edit_section_title_description']"),
+				"Cannot Find article title",
+				15
+		);
+
+		driver.rotate(ScreenOrientation.LANDSCAPE);
+
+		String title_after_rotation = waitForElementAndGetText(
+				By.xpath("//*[@resource-id='pagelib_edit_section_title_description']"),
+				"Cannot Find article title",
+				15
+		);
+
+		Assert.assertEquals("Article title have been changed after rotation", title_after_rotation, title_before_rotation);
+	}
+
 	//------------------------------------------------------------------------------------------------------------------
 	// Search and click
 	//------------------------------------------------------------------------------------------------------------------
@@ -385,6 +429,11 @@ public class FirstTests {
 		return wait.until(
 				ExpectedConditions.presenceOfAllElementsLocatedBy(by)
 		);
+	}
+
+	private String waitForElementAndGetText(By by, String err_msg, long timeoutInSeconds){
+		WebElement element = waitForElementPresent(by, err_msg, timeoutInSeconds);
+		return element.getText();
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
