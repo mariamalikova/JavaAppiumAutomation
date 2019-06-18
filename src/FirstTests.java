@@ -132,6 +132,7 @@ public class FirstTests {
 
 		String folder_name = "Learning programming";
 		String first_article_title = "Java";
+		String first_article_title_full = "Java (programming language)";
 		String second_article_title = "Kotlin";
 
 
@@ -276,23 +277,23 @@ public class FirstTests {
 
 		waitForElementNotPresent(
 				By.xpath("//*[contains(@text, '" + second_article_title + "')]"),
-				"There is no search field on the screen",
+				"Article '" + second_article_title + "'is still present in list",
 				5
 		);
 
 		waitForElementAndClick(
 				By.xpath("//*[contains(@text, '" + first_article_title + "')]"),
-				"There is no search field on the screen",
+				"There is no article with title '" + first_article_title + "' on the screen",
 				5
 		);
 
 		WebElement title_element = waitForElementPresent(
 				By.xpath("//*[contains(@text, '" + first_article_title + "')]"),
-				"There is no search field on the screen",
+				"There is no article with title '" + first_article_title + "' on the screen",
 				5
 		);
 
-		Assert.assertTrue("Title does not match. Expected: " + first_article_title + ", actual: " + title_element.getText(), first_article_title.equals(title_element.getText()));
+		Assert.assertEquals("Title does not match. Expected: " + first_article_title_full + ", actual: " + title_element.getText(), first_article_title, title_element.getText());
 
 	}
 
