@@ -13,7 +13,8 @@ public class SearchPageObject extends MainPageObject {
 			SEARCH_INPUT = "//*[@resource-id='org.wikipedia:id/search_src_text']",
 			SEARCH_RESULT_TITLE_ELEMENT = "//*[@resource-id='org.wikipedia:id/page_list_item_title']",
 			SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/fragment_search_results']//*[contains(@text, '{SUBSTRING}')]",
-			SEARCH_CLOSE_BUTTON = "//*[@resource-id='org.wikipedia:id/search_close_btn']";
+			SEARCH_CLOSE_BUTTON = "//*[@resource-id='org.wikipedia:id/search_close_btn']",
+			SEARCH_RESULT_BY_TITLE_AND_SUBTITLE = "//*[contains(@text, '{TITLE}')]/following-sibling::*[contains(@text, '{SUBTITLE}')]/parent::*";
 
 	public SearchPageObject(AppiumDriver driver){
 		super(driver);
@@ -22,6 +23,10 @@ public class SearchPageObject extends MainPageObject {
 	/* TEMPLATES METHODS */
 	private static String getResultSearchElement(String substr) {
 		return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substr);
+	}
+
+	private static String getSearchResultElementByTitleAndSubtitle(String title, String subtitle){
+		return SEARCH_RESULT_BY_TITLE_AND_SUBTITLE.replace("{TITLE}", title).replace("{SUBTITLE}", subtitle);
 	}
 	/* TEMPLATES METHODS */
 
@@ -60,6 +65,11 @@ public class SearchPageObject extends MainPageObject {
 
 	public void waitForSearchResultToDisappear(){
 		this.waitForElementNotPresent(By.xpath(SEARCH_RESULT_TITLE_ELEMENT), "Search results still present on the screen", 5);
+	}
+
+	public void waitForElementByTitleAndDescription(String title, String description){
+		String searchResultXpath = getSearchResultElementByTitleAndSubtitle(title, description);
+		this.waitForElementPresent(By.xpath(searchResultXpath), "Cannot find search result by title '" + title + "' and subtitle '" + description + "'");
 	}
 
 }
