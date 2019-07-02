@@ -1,7 +1,6 @@
 package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 
 public class BookmarkListPageObject extends MainPageObject {
 
@@ -10,10 +9,10 @@ public class BookmarkListPageObject extends MainPageObject {
 	}
 
 	public void deleteArticleFromListBySwipe(String articleTitle) {
-		this.swipeElementToLeft(By.xpath("//*[contains(@text, '" + articleTitle + "')]"), "Cannot find '" + articleTitle + "'");
+		this.swipeElementToLeft("xpath://*[contains(@text, '" + articleTitle + "')]", "Cannot find '" + articleTitle + "'");
 	}
 
 	public void openArticle(String articleTitle){
-		this.waitForElementAndClick(By.xpath("//*[contains(@text, '" + articleTitle + "')]"), "There is no article with title '" + articleTitle + "' on the screen", 5);
+		this.waitForElementAndClick("xpath://*[contains(@text, '" + articleTitle + "')]", "There is no article with title '" + articleTitle + "' on the screen", 5);
 	}
 }
