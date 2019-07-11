@@ -1,25 +1,35 @@
-package lib.UI;
+package lib.UI.pageObjects;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
 
-public class ArticlePageObject extends MainPageObject {
+abstract public class ArticlePageObject extends MainPageObject {
 
-	private static final String
-			ARTICLE_MENU_BOOKMARK = "xpath://*[@resource-id='org.wikipedia:id/article_menu_bookmark']",
-			GOT_IT_BUTTON = "xpath://*[@text='GOT IT']",
-			CREATE_NEW_LIST_BUTTON = "xpath://*[@text='Create new']",
-			LIST_TITLE_INPUT = "xpath://*[@resource-id='org.wikipedia:id/text_input']",
-			CREATE_LIST_OK_BUTTON = "xpath://*[@text='OK']",
-			OVERFLOW_MENU_BUTTON = "xpath://*[@resource-id='org.wikipedia:id/page_toolbar_button_show_overflow_menu']",
-			OVERFLOW_FEED_BUTTON = "xpath://*[@resource-id='org.wikipedia:id/page_action_overflow_feed']",
-			NO_THANKS_BUTTON = "xpath://*[@resource-id='android:id/button2']",
-			ARTICLE_SUBTITLE = "xpath://*[@resource-id='pagelib_edit_section_title_description']";
+	protected static String
+			ARTICLE_MENU_BOOKMARK,
+			GOT_IT_BUTTON,
+			CREATE_NEW_LIST_BUTTON,
+			LIST_TITLE_INPUT,
+			CREATE_LIST_OK_BUTTON,
+			OVERFLOW_MENU_BUTTON,
+			OVERFLOW_FEED_BUTTON,
+			NO_THANKS_BUTTON,
+			ARTICLE_SUBTITLE,
+			GO_BACK_BUTTON,
+			CLOSE_DIALOG_BUTTON;
 
 
 	public ArticlePageObject(AppiumDriver driver){
 		super(driver);
 	}
+
+	/* TEMPLATES METHODS */
+	private static String getSubtitleElement(String substr) {
+		return ARTICLE_SUBTITLE.replace("{SUBTITLE}", substr);
+	}
+
+	/* TEMPLATES METHODS */
+
 
 	public void addArticleToBookmarksAndCreateList(String list_name){
 		this.waitForElementAndClick(ARTICLE_MENU_BOOKMARK, "Cannot find button to open article options", 5);
@@ -51,4 +61,15 @@ public class ArticlePageObject extends MainPageObject {
 		this.assertElementPresent(ARTICLE_SUBTITLE, "We don't found subtitle element");
 	}
 
+	public void addArticleToMySaved(){
+		this.waitForElementAndClick(ARTICLE_MENU_BOOKMARK, "Cannot find button to open article options", 10);
+	}
+
+	public void closeArticle(){
+		this.waitForElementAndClick(GO_BACK_BUTTON, "Cannot find Back button", 10);
+	}
+
+	public void closeDialog(){
+		this.waitForElementAndClick(CLOSE_DIALOG_BUTTON, "Cannot find close dialog button", 10);
+	}
 }

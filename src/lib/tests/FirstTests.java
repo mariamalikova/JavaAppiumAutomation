@@ -1,10 +1,9 @@
-package lib.tests.android;
+package lib.tests;
 
 import lib.CoreTestCase;
-import lib.UI.ArticlePageObject;
-import lib.UI.BookmarkListPageObject;
-import lib.UI.MainPageObject;
-import lib.UI.SearchPageObject;
+import lib.Platform;
+import lib.UI.factories.*;
+import lib.UI.pageObjects.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -17,21 +16,13 @@ public class FirstTests extends CoreTestCase {
 
 	protected void setUp() throws Exception{
 		super.setUp();
-		mainPAgeObject = new MainPageObject(driver);
-
-		mainPAgeObject = new MainPageObject(driver);
-		mainPAgeObject.waitForElementAndClick(
-				"xpath://*[@resource-id='org.wikipedia:id/fragment_onboarding_skip_button']",
-				"There is no skip button on screen",
-				5
-		);
 	}
 
 	// Ex 2
 	@Test
 	public void testCheckSearchField(){
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
 
 		searchPageObject.initSearchInput();
 		searchPageObject.typeSearchLine("Java");
@@ -42,7 +33,7 @@ public class FirstTests extends CoreTestCase {
 	@Test
 	public void testCheckSearchResultPresent(){
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
 
 		searchPageObject.initSearchInput();
 		searchPageObject.typeSearchLine("Java");
@@ -58,7 +49,7 @@ public class FirstTests extends CoreTestCase {
 	@Test
 	public void testCheckSearchResultContainsRequestedString(){
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
 		String searchString = "java";
 
 		searchPageObject.initSearchInput();
@@ -72,46 +63,67 @@ public class FirstTests extends CoreTestCase {
 	}
 
 	// Ex 5
+	// EX 11
 	@Test
 	public void testSaveTwoArticlesToMyList() {
 
 		String folderName = "Learning programming";
 		String firstArticleTitle = "Java";
 		String firstArticleSubtitle = "Object-oriented programming language";
-		String SecondArticleTitle = "Kotlin";
+		String secondArticleTitle = "Kotlin";
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
-		ArticlePageObject articlePageObject = new ArticlePageObject(driver);
-		BookmarkListPageObject bookmarkPageObject = new BookmarkListPageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
+		ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
+		BookmarkListPageObject bookmarkPageObject = BookmarkListPageObjectFactory.get(driver);
+		mainPAgeObject = MainPageObjectFactory.get(driver);
 
 		searchPageObject.initSearchInput();
 		searchPageObject.typeSearchLine(firstArticleTitle);
 		searchPageObject.clickForSearchResult("Object-oriented programming language");
 
-		articlePageObject.addArticleToBookmarksAndCreateList(folderName);
-		articlePageObject.returnToMainScreen();
+		if (Platform.getInstance().isAndroid()){
+			articlePageObject.addArticleToBookmarksAndCreateList(folderName);
+			articlePageObject.returnToMainScreen();
+		} else if (Platform.getInstance().isIOS()){
+			articlePageObject.addArticleToMySaved();
+			articlePageObject.closeDialog();
+			articlePageObject.closeArticle();
+		}
 
 		searchPageObject.initSearchInput();
-		searchPageObject.typeSearchLine(SecondArticleTitle);
+		searchPageObject.typeSearchLine(secondArticleTitle);
 		searchPageObject.clickForSearchResult("programming language");
 
-		articlePageObject.addArticleToBookmarks(folderName);
-		articlePageObject.returnToMainScreen();
 
-		mainPAgeObject.openBookmarksList(folderName);
+		if (Platform.getInstance().isAndroid()){
+			articlePageObject.addArticleToBookmarks(folderName);
+			articlePageObject.returnToMainScreen();
+			mainPAgeObject.openBookmarks();
+			mainPAgeObject.openMyBookmarksList(folderName);
+		} else if (Platform.getInstance().isIOS()){
+			articlePageObject.addArticleToMySaved();
+			articlePageObject.closeArticle();
+			mainPAgeObject.openBookmarks();
+		}
 
-		bookmarkPageObject.deleteArticleFromListBySwipe(SecondArticleTitle);
-		bookmarkPageObject.openArticle(firstArticleTitle);
-		String articleSubtitle = articlePageObject.getArticleSubtitle();
-		Assert.assertEquals("Title does not match. Expected: " + firstArticleSubtitle + ", actual: " + articleSubtitle, firstArticleSubtitle, articleSubtitle);
+		bookmarkPageObject.deleteArticleFromListBySwipe(secondArticleTitle);
+
+		if (Platform.getInstance().isAndroid()){
+			bookmarkPageObject.openArticle(firstArticleTitle);
+			String articleSubtitle = articlePageObject.getArticleSubtitle();
+			Assert.assertEquals("Title does not match. Expected: " + firstArticleSubtitle + ", actual: " + articleSubtitle, firstArticleSubtitle, articleSubtitle);
+		} else if (Platform.getInstance().isIOS()) {
+			bookmarkPageObject.checkArticlePresentInList(firstArticleTitle);
+			bookmarkPageObject.checkArticleNotPresentInList(secondArticleTitle);
+		}
 	}
 
 	// Ex 6
 	@Test
 	public void testCheckArticleTitleWithoutWaiting(){
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
-		ArticlePageObject articlePageObject = new ArticlePageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
+		ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
 		String search_str = "java";
 
 		searchPageObject.initSearchInput();
@@ -124,8 +136,8 @@ public class FirstTests extends CoreTestCase {
 	@Test
 	public void testChangeScreenOrientationOnSearchResults() {
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
-		ArticlePageObject articlePageObject = new ArticlePageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
+		ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
 
 		searchPageObject.initSearchInput();
 		searchPageObject.typeSearchLine("Java");
@@ -144,7 +156,7 @@ public class FirstTests extends CoreTestCase {
 	@Test
 	public void testCheckSearchResultByTitleAndSubtitle(){
 
-		SearchPageObject searchPageObject = new SearchPageObject(driver);
+		SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
 
 		String expecedTitle1 = "Java";
 		String expectedSubtitle1 = "Island of Indonesia";
@@ -160,6 +172,26 @@ public class FirstTests extends CoreTestCase {
 		searchPageObject.waitForElementByTitleAndDescription(expecedTitle1, expectedSubtitle1);
 		searchPageObject.waitForElementByTitleAndDescription(expecedTitle2, expectedSubtitle2);
 		searchPageObject.waitForElementByTitleAndDescription(expecedTitle3, expectedSubtitle3);
+	}
+
+	@Test
+	public void testPassThroughWelcome(){
+
+		if (Platform.getInstance().isAndroid()){
+			return;
+		}
+
+		WelcomePageObject welcomePageObject = WelcomePageObjectFactory.get(driver);
+
+		welcomePageObject.waitForLearnMoreLink();
+		welcomePageObject.clickNextButton();
+		welcomePageObject.waitForNewWaysText();
+		welcomePageObject.clickNextButton();
+		welcomePageObject.waitForSearchInText();
+		welcomePageObject.clickNextButton();
+		welcomePageObject.waitForHelpMakeText();
+		welcomePageObject.clickGetStartedButton();
+
 	}
 }
 

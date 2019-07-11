@@ -1,16 +1,17 @@
-package lib.UI;
+package lib.UI.pageObjects;
 
 import io.appium.java_client.AppiumDriver;
 
-public class WelcomePageObject extends MainPageObject{
+abstract public class WelcomePageObject extends MainPageObject{
 
-	private static final String
-			LEARN_MORE_LINK = "xpath://*[@name ='Learn more about Wikipedia']",
-			NEW_WAYS_TO_EXPLORE_TEXT = "xpath://*[@name ='New ways to explore']",
-			SEARCH_IN_TEXT = "xpath://*[@name ='Search in nearly 300 languages']",
-			HELP_TO_MAKE_APP_BETTER_TEXT = "xpath://*[@name ='Help make the app better']",
-			GET_STARTED_BUTTON = "xpath://*[@name ='Get started']",
-			NEXT_BUTTON = "xpath://*[@name ='Next']";
+	protected static String
+			LEARN_MORE_LINK,
+			NEW_WAYS_TO_EXPLORE_TEXT,
+			SEARCH_IN_TEXT,
+			HELP_TO_MAKE_APP_BETTER_TEXT,
+			GET_STARTED_BUTTON,
+			NEXT_BUTTON,
+			SKIP;
 
 	public WelcomePageObject(AppiumDriver driver){
 		super(driver);
@@ -38,5 +39,9 @@ public class WelcomePageObject extends MainPageObject{
 
 	public void clickGetStartedButton(){
 		this.waitForElementAndClick(GET_STARTED_BUTTON, "Cannot find and click 'Get started' button", 10);
+	}
+
+	public void skipTutorial(){
+		this.waitForElementAndClick(SKIP, "Cannot find and click 'Skip' button", 10);
 	}
 }

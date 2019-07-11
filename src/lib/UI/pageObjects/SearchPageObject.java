@@ -1,19 +1,19 @@
-package lib.UI;
+package lib.UI.pageObjects;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class SearchPageObject extends MainPageObject {
+abstract public class SearchPageObject extends MainPageObject {
 
-	private static final String
-			SEARCH_INIT_ELEMENT = "xpath://*[contains(@text, 'Search Wikipedia')]",
-			SEARCH_INPUT = "xpath://*[@resource-id='org.wikipedia:id/search_src_text']",
-			SEARCH_RESULT_TITLE_ELEMENT = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title']",
-			SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/fragment_search_results']//*[contains(@text, '{SUBSTRING}')]",
-			SEARCH_CLOSE_BUTTON = "xpath://*[@resource-id='org.wikipedia:id/search_close_btn']",
-			SEARCH_RESULT_BY_TITLE_AND_SUBTITLE = "xpath://*[contains(@text, '{TITLE}')]/following-sibling::*[contains(@text, '{SUBTITLE}')]/parent::*";
+	protected static String
+			SEARCH_INIT_ELEMENT,
+			SEARCH_INPUT,
+			SEARCH_RESULT_TITLE_ELEMENT,
+			SEARCH_RESULT_BY_SUBSTRING_TPL,
+			SEARCH_CLOSE_BUTTON,
+			SEARCH_RESULT_BY_TITLE_AND_SUBTITLE;
 
 	public SearchPageObject(AppiumDriver driver){
 		super(driver);
@@ -31,7 +31,7 @@ public class SearchPageObject extends MainPageObject {
 
 	public void initSearchInput(){
 		this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "There is no search field on the screen", 5);
-		this.waitForElementPresent(SEARCH_INIT_ELEMENT, "Cannot find search input after clicking search init element");
+		//this.waitForElementPresent(SEARCH_INIT_ELEMENT, "Cannot find search input after clicking search init element");
 	}
 
 	public void typeSearchLine(String seach_line){
